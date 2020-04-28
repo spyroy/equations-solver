@@ -30,7 +30,7 @@ RealVariable solver::operator +(const RealVariable& x, const RealVariable& y){
         pow2 = true;
     }
     num = x.num + y.num;
-    return RealVariable(co1,x.power_1,co2,x.power_2,x.var,num);
+    return RealVariable(co1,pow1,co2,pow2,x.var,num);
 }
 RealVariable solver::operator +(const RealVariable& x, const double y){
     return RealVariable(x.cofficcient_1,x.power_1,x.cofficcient_2,x.power_2,x.var,x.num+y);
@@ -63,7 +63,7 @@ RealVariable solver::operator -(const RealVariable& x, const RealVariable& y){
         pow2 = true;
     }
     num = x.num - y.num;
-    return RealVariable(co1,x.power_1,co2,x.power_2,x.var,num);
+    return RealVariable(co1,pow1,co2,pow2,x.var,num);
 }
 RealVariable solver::operator -(const RealVariable& x, const double y){
     return RealVariable(x.cofficcient_1,x.power_1,x.cofficcient_2,x.power_2,x.var,x.num-y);
@@ -77,6 +77,9 @@ RealVariable solver::operator *(const RealVariable& x, const RealVariable& y){
     }
     if(x.power_2 || y.power_2){
         throw runtime_error("equation must be quadratic equation");
+    }
+    if((!x.power_1 && !x.power_2 && x.num == 0) || (!y.power_1 && !y.power_2 && y.num == 0)){
+        return RealVariable(0,false,0,false,x.var,0);
     }
     double co1 = 0;
     double co2 = 0;
@@ -113,6 +116,9 @@ RealVariable solver::operator *(const RealVariable& x, const RealVariable& y){
     return RealVariable(co1,pow1,co2,pow2,x.var,num);
 }
 RealVariable solver::operator *(const RealVariable& x, const double y){
+    if((!x.power_1 && !x.power_2 && x.num == 0) || y == 0){
+        return RealVariable(0,false,0,false,x.var,0);
+    }
     double co1 = 0;
     double co2 = 0;
     bool pow1;
@@ -126,6 +132,9 @@ RealVariable solver::operator *(const RealVariable& x, const double y){
     return RealVariable(co1,pow1,co2,pow2,x.var,num);
 }
 RealVariable solver::operator *(const double x, const RealVariable& y){
+    if((!y.power_1 && !y.power_2 && y.num == 0) || x == 0){
+        return RealVariable(0,false,0,false,y.var,0);
+    }
     double co1 = 0;
     double co2 = 0;
     bool pow1;
@@ -157,6 +166,7 @@ RealVariable solver::operator /(const RealVariable& x, const double y){
     num = x.num / y;
     return RealVariable(co1,pow1,co2,pow2,x.var,num);
 }
+//doesnt work well!!!
 RealVariable solver::operator /(const double x, const RealVariable& y){
     double co1 = 0;
     double co2 = 0;
@@ -173,7 +183,11 @@ RealVariable solver::operator /(const double x, const RealVariable& y){
 RealVariable solver::operator ^(const RealVariable& x, const RealVariable& y){
     return RealVariable();
 }
+//add negative power!!
 RealVariable solver::operator ^(const RealVariable& x, const double y){
+    if(!x.power_1 && !x.power_2){
+        return RealVariable(0,false,0,false,x.var,x.num*y);
+    }
     if(y > 2){
         throw runtime_error("equation must be quadratic equation");
     }
@@ -184,7 +198,7 @@ RealVariable solver::operator ^(const RealVariable& x, const double y){
     double num;
     if(y == 0){
         num =1;
-        return RealVariable(co1,pow1,co2,pow2,x.var,num);
+        return RealVariable(0,false,0,false,x.var,num);
     }
     if(y == 1){
         return x;
@@ -221,30 +235,53 @@ double solver::solve(RealVariable x) {
     if(!x.is_equastion){
         throw runtime_error("this is not equation");
     }
-    if((x.cofficcient_2 < 0 && x.num < 0) || (x.cofficcient_2 > 0 && x.num > 0)){
+    if((!x.power_1 && x.power_2 && x.cofficcient_2 < 0 && x.num < 0) || (!x.power_1 && x.power_2 && x.cofficcient_2 > 0 && x.num > 0)){
         throw runtime_error("There is no real solution");
+    }
+    if(!x.power_1 && !x.power_2 && x.num == 0){
+        return INFINITY; // there are infinity number of solutions.
+    }
+    if(!x.power_1 && !x.power_2 && x.num != 0){
+        throw runtime_error("There is no solution");
     }
     double ans1;
     double ans2;
     if(x.power_1 && x.power_2){
-        if((pow(x.cofficcient_2,2))-(4*x.cofficcient_1*x.num) < 0)
+        if((pow(x.cofficcient_1,2))-(4*x.cofficcient_2*x.num) < 0)
             throw runtime_error("There is no real solution");
         else
         {
-            ans1 = ((x.cofficcient_2*(-1)) + sqrt((pow(x.cofficcient_2,2))-(4*x.cofficcient_1*x.num)))/2*x.cofficcient_1;
-            ans2 = ((x.cofficcient_2*(-1)) - sqrt((pow(x.cofficcient_2,2))-(4*x.cofficcient_1*x.num)))/2*x.cofficcient_1;
+            double a = (pow(x.cofficcient_1,2));
+            double b = (4*x.cofficcient_2*x.num);
+            double c = sqrt(a-b);
+            double d = 2*x.cofficcient_2;
+            double e = (x.cofficcient_1*(-1));
+            ans1 = ((e) + c)/d;
+            ans2 = ((e) - c)/d;
+            srand(time(NULL));
+            int r =  rand()%2;
+            if(r == 0)
+                return ans1;
+            else
+                return ans2; 
         }  
-    }
-    if(x.power_1 && !x.power_2){
-        ans1 = (x.num*(-1))/x.cofficcient_1;
     }
     if(!x.power_1 && x.power_2){
         ans1 = sqrt((x.num*(-1))/x.cofficcient_2);
         ans2 = (sqrt((x.num*(-1))/x.cofficcient_2))*(-1);
+        srand(time(NULL));
+        int r =  rand()%2;
+        if(r == 0)
+            return ans1;
+        else
+            return ans2; 
+    }
+    if(x.power_1 && !x.power_2){
+        ans1 = (x.num*(-1))/x.cofficcient_1;
     }
     if(!x.power_1 && !x.power_2){
         ans1 = x.num*(-1);
-    }
+    }  
     return ans1;
 }
 

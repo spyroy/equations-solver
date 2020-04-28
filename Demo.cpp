@@ -9,6 +9,9 @@
 #include <iostream>
 #include <complex>
 #include "solver.hpp"
+#include <stdio.h>      
+#include <stdlib.h>     
+#include <time.h> 
 
 using namespace std;
 using solver::solve, solver::RealVariable, solver::ComplexVariable;
