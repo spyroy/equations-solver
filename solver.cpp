@@ -285,59 +285,154 @@ double solver::solve(RealVariable x) {
     return ans1;
 }
 
+//complex
+
 ComplexVariable solver::operator +(const ComplexVariable& c1, const ComplexVariable& c2){
-    return ComplexVariable();
+    std::complex<double> x_2 = c1.x_2 + c2.x_2;
+    std::complex<double> x_1 = c1.x_1 + c2.x_1;
+    std::complex<double> c = c1.c + c2.c;
+    return ComplexVariable(x_2,x_1,c);
 }
 ComplexVariable solver::operator +(const ComplexVariable& c, const double x){
-    return ComplexVariable();
+    std::complex<double> c1 = c.c + x;
+    return ComplexVariable(c.x_2,c.x_1,c1);
 }
 ComplexVariable solver::operator +(const double x, const ComplexVariable& c){
-    return ComplexVariable();
+    std::complex<double> c1 = c.c + x;
+    return ComplexVariable(c.x_2,c.x_1,c1);
 }
 ComplexVariable solver::operator +(const ComplexVariable& c1, std::complex<double> c2){
-    return ComplexVariable();
+    return ComplexVariable(c1.x_2,c1.x_1,c1.c+c2);
+}
+ComplexVariable solver::operator +(std::complex<double> c2, const ComplexVariable& c1){
+    return ComplexVariable(c1.x_2,c1.x_1,c1.c+c2);
 }
 ComplexVariable solver::operator -(const ComplexVariable& c1, const ComplexVariable& c2){
-    return ComplexVariable();
+    std::complex<double> x_2 = c1.x_2 - c2.x_2;
+    std::complex<double> x_1 = c1.x_1 - c2.x_1;
+    std::complex<double> c = c1.c - c2.c;
+    return ComplexVariable(x_2,x_1,c);
 }
 ComplexVariable solver::operator -(const ComplexVariable& c, const double x){
-    return ComplexVariable();
+    std::complex<double> c1 = c.c - x;
+    return ComplexVariable(c.x_2,c.x_1,c1);
 }
 ComplexVariable solver::operator -(const double x, const ComplexVariable& c){
-    return ComplexVariable();
+    std::complex<double> c1 = x - c.c;
+    return ComplexVariable(c.x_2,c.x_1,c1);
 }
 ComplexVariable solver::operator -(const ComplexVariable& c1, std::complex<double> c2){
-    return ComplexVariable();
+    return ComplexVariable(c1.x_2,c1.x_1,c1.c-c2);
+}
+ComplexVariable solver::operator -(std::complex<double> c2, const ComplexVariable& c1){
+    return ComplexVariable(c1.x_2,c1.x_1,c2-c1.c);
 }
 ComplexVariable solver::operator *(const ComplexVariable& c1, const ComplexVariable& c2){
-    return ComplexVariable();
+    std::complex<double> x_2;
+    std::complex<double> x_1;
+    std::complex<double> c;
+    if((c1.x_2 == complex<double>(0,0) && c1.x_1 == complex<double>(0,0) && c1.c == complex<double>(0,0)) || c2.x_2 == complex<double>(0,0) && c2.x_1 == complex<double>(0,0) && c2.c == complex<double>(0,0)){
+        return ComplexVariable(0.0,0.0,0.0);
+    }
+    if(c1.x_2 != complex<double>(0,0) && c2.x_2 != complex<double>(0,0)){
+       throw runtime_error("equation must be quadratic equation");
+    }
+    if(c1.x_2 != complex<double>(0,0) && c2.x_1 != complex<double>(0,0)){
+        throw runtime_error("equation must be quadratic equation");
+    }
+    if(c2.x_2 != complex<double>(0,0) && c1.x_1 != complex<double>(0,0)){
+        throw runtime_error("equation must be quadratic equation");
+    }
+    if(c1.x_2 != complex<double>(0,0)){
+        x_2 = c1.x_2 * c2.c;
+        x_1 = c1.x_1 * c2.c;
+        c = c1.c * c2.c;
+    }
+    if(c2.x_2 != complex<double>(0,0)){
+        x_2 = c2.x_2 * c1.c;
+        x_1 = c2.x_1 * c1.c;
+        c = c2.c * c1.c;
+    }
+    if(c1.x_1 != complex<double>(0,0) && c2.x_1 != complex<double>(0,0)){
+        x_2 = c1.x_1 * c2.x_1;
+        x_1 = (c1.x_1 * c2.c) + (c1.c * c2.x_1);
+        c = c1.c * c2.c;
+    }
+    else{
+        x_2 = complex<double>(0,0);
+        x_1 = complex<double>(0,0);
+        c = c1.c * c2.c;
+    }
+    return ComplexVariable(x_2,x_1,c);
 }
 ComplexVariable solver::operator *(const ComplexVariable& c, const double x){
-    return ComplexVariable();
+    std::complex<double> x_2 = c.x_2 * x;
+    std::complex<double> x_1 = c.x_1 * x;
+    std::complex<double> c1 = c.c * x;
+    return ComplexVariable(x_2,x_1,c1);
 }
 ComplexVariable solver::operator *(const double x, const ComplexVariable& c){
-    return ComplexVariable();
+    std::complex<double> x_2 = c.x_2 * x;
+    std::complex<double> x_1 = c.x_1 * x;
+    std::complex<double> c1 = c.c * x;
+    return ComplexVariable(x_2,x_1,c1);
 }
 ComplexVariable solver::operator *(const ComplexVariable& c1, std::complex<double> c2){
+    std::complex<double> x_2 = c1.x_2 * c2;
+    std::complex<double> x_1 = c1.x_1 * c2;
+    std::complex<double> c = c1.c * c2;
+    return ComplexVariable(x_2,x_1,c);
+}
+ComplexVariable solver::operator *(std::complex<double> c2, const ComplexVariable& c1){
+    std::complex<double> x_2 = c1.x_2 * c2;
+    std::complex<double> x_1 = c1.x_1 * c2;
+    std::complex<double> c = c1.c * c2;
+    return ComplexVariable(x_2,x_1,c);
     return ComplexVariable();
 }
 ComplexVariable solver::operator /(const ComplexVariable& c1, const ComplexVariable& c2){
     return ComplexVariable();
 }
 ComplexVariable solver::operator /(const ComplexVariable& c, const double x){
-    return ComplexVariable();
+    std::complex<double> x_2 = c.x_2 / x;
+    std::complex<double> x_1 = c.x_1 / x;
+    std::complex<double> c1 = c.c / x;
+    return ComplexVariable(x_2,x_1,c1);
 }
 ComplexVariable solver::operator /(const double x, const ComplexVariable& c){
-    return ComplexVariable();
+    std::complex<double> x_2 = x / c.x_2 ;
+    std::complex<double> x_1 = x / c.x_1 ;
+    std::complex<double> c1 = x / c.c ;
+    return ComplexVariable(x_2,x_1,c1);
 }
 ComplexVariable solver::operator /(const ComplexVariable& c1, std::complex<double> c2){
-    return ComplexVariable();
+    std::complex<double> x_2 = c1.x_2 / c2;
+    std::complex<double> x_1 = c1.x_1 / c2 ;
+    std::complex<double> c = c1.c / c2;
+    return ComplexVariable(x_2,x_1,c);
+}
+ComplexVariable solver::operator /(std::complex<double> c2, const ComplexVariable& c1){
+    std::complex<double> x_2 = c2 / c1.x_2;
+    std::complex<double> x_1 = c2 / c1.x_1 ;
+    std::complex<double> c = c2 / c1.c;
+    return ComplexVariable(x_2,x_1,c);
 }
 ComplexVariable solver::operator ^(const ComplexVariable& c1, const ComplexVariable& c2){
     return ComplexVariable();
 }
 ComplexVariable solver::operator ^(const ComplexVariable& c1, double x){
-    return ComplexVariable();
+    if(x == 0){
+        return ComplexVariable(0.0,0.0,1.0);
+    }
+    if(x == 1){
+        return c1;
+    }
+    if(x == 2 && c1.x_2 == complex<double>(0,0)){
+        return c1*c1;
+    }
+    else{
+        throw runtime_error("equation must be quadratic equation");
+    }
 }
 ComplexVariable solver::operator ^(const double x, const ComplexVariable& c){
     return ComplexVariable();
@@ -346,18 +441,29 @@ ComplexVariable solver::operator ^(const ComplexVariable& c1, std::complex<doubl
     return ComplexVariable();
 }
 ComplexVariable solver::operator ==(const ComplexVariable& c1, const ComplexVariable& c2){
-    return ComplexVariable();
+    return c1-c2;
 }
 ComplexVariable solver::operator ==(const ComplexVariable& c, const double x){
-    return ComplexVariable();
+    return c-x;
 }
 ComplexVariable solver::operator ==(const double x, const ComplexVariable& c){
-    return ComplexVariable();
+    return x-c;
 }
 ComplexVariable solver::operator ==(const ComplexVariable& c1, std::complex<double> c2){
-    return ComplexVariable();
+    return c1-c2;
+}
+ComplexVariable solver::operator ==(std::complex<double> c2, const ComplexVariable& c1){
+    return c2 - c1;
 }
 
-complex<double> solver::solve(ComplexVariable) {
-    return complex<double>();
+complex<double> solver::solve(ComplexVariable c) {
+    std::complex<double> discriminant = ((c.x_1 * c.x_1)) - (std::complex<double>(4, 0) * c.x_2 * c.c);
+    std::complex<double> ans = 0;
+    if (c.x_2 == std::complex<double>(0, 0)) {
+        ans = (-c.c) / c.x_1;
+    } else {
+        discriminant = sqrt(discriminant);
+        ans = (((-1.0) * c.x_1) + discriminant) / (2.0 * c.x_2);
+    }
+    return ans;
 }
