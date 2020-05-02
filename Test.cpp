@@ -1,7 +1,7 @@
 #include "doctest.h"
 #include "solver.hpp"
 #include <string>
-
+#define EPS 0.0001
 using namespace std;
 using namespace solver;
 
@@ -229,4 +229,61 @@ TEST_CASE("various complex equation") {
 	CHECK(solve((x^2) == 1) == std::complex<double>(1,0));
 	CHECK(solve((x^2)-2*x == 3) == std::complex<double>(1,sqrt(2)));
 	CHECK(solve(x == 9) == std::complex<double>(9,0));
+}
+
+TEST_CASE("solve linear equations")
+{
+    RealVariable x;
+
+    CHECK(abs(solve(2*x-8==10)-9)<EPS);
+    CHECK(abs(solve(2*x-5+50==10)-(-17.5)<EPS));
+    CHECK(abs(solve(x*2-8==10)-9)<EPS);
+    CHECK(abs(solve((5*5)*x-20==10)-1.2)<EPS);
+    CHECK(abs(solve(7*x-4/2 == 47)-7) < EPS);
+    CHECK(abs(solve(2*x+2*x == 4)-1) < EPS);
+    CHECK(abs(solve(-1*x-3 == -2*x) - 3 ) < EPS);
+    CHECK(abs(solve(-2*x-3 == -6*x) - 0.75) < EPS);
+    CHECK(abs(solve(2*x-8 == -8)) < EPS);
+    CHECK(abs(solve(x*2 + 8==12) - 2 ) < EPS);
+    CHECK(abs(solve(2*x-4 == 10)-7 ) < EPS);
+    CHECK(abs(solve(2*x == 10) - 5) < EPS);
+    CHECK(abs(solve(7*x-4/2 == 47) - 7 ) < EPS);
+    CHECK(abs(solve(2*x+2*x == 4) - 1 ) < EPS);
+    CHECK(abs(solve(x-3-3-3 == -2*x) - 3 ) < EPS);
+    CHECK(abs(solve(89*x-95 == -6*x) - 1.0) < EPS);
+    CHECK(abs(solve(2*x+12 == -8) - (-10) ) < EPS);
+    CHECK(abs(solve(x*2 + 4==12) - 4 ) < EPS);
+    CHECK(abs(solve(2*x-4 == 10)-7 ) < EPS);
+    CHECK(abs(solve(2*x == 4) - 2) < EPS);
+    CHECK(abs(solve(7*x-4/2 == 47) - 7 ) < EPS);
+    CHECK(abs(solve(2*x+2*x == 4) - 1 ) < EPS);
+    CHECK(abs(solve(-8 == -2*x) - 4 ) < EPS);//x in right side
+    CHECK(abs(solve(-20*x == -6*x)) < EPS);//x is zero
+    CHECK(abs(solve(2*x+12 == -8) - (-10) ) < EPS);
+    CHECK(abs(solve(x*2 + 4==12) - 4 ) < EPS);
+    CHECK(abs(solve(2*x-4 == 10)-7 ) < EPS);
+    CHECK(abs(solve(2*x == 4) - 2) < EPS);
+    CHECK(abs(solve(70*x-(100*2*3) == -670) -(-1)) < EPS);
+    CHECK(abs(solve(2*x+2*x == 4) - 1 ) < EPS);
+    CHECK(abs(solve(-10*x-32 == -2*x) - (-4) ) < EPS);
+    CHECK(abs(solve(80*x-302 == 78*x) - 151) < EPS);
+    CHECK(abs(solve(2*x+12 == -8) - (-10) ) < EPS);
+    CHECK(abs(solve(x*2 + 16==12) - (-2) ) < EPS);
+
+}
+
+TEST_CASE("solve square equations")
+{
+    RealVariable x;
+
+    CHECK( abs(solve(2*(x^2) == 8 ) - (-2) ) < EPS);//Two possible solutions - +2 or -2
+    CHECK( abs(solve(3*(x^2)-12*x==0) ) < EPS);
+    CHECK( abs(solve(3*(x^2)-12*x==0) -4) < EPS);
+    CHECK( abs(solve(x^2+2*x-8==0) - 2) < EPS);
+    CHECK( abs(solve(x^2+2*x-8==0) - (-4)) < EPS);
+    CHECK( abs(solve(x^2+3*x-18) - 3 ) < EPS);
+    CHECK( abs(solve(x^2+3*x-18) - (-6) ) < EPS);
+    CHECK( abs(solve(2*(x^2)-9*x == -9) - 1.5 ) < EPS);
+    CHECK( abs(solve(2*(x^2)-9*x == -9) - 3 ) < EPS);
+    
 }
