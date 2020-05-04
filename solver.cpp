@@ -108,7 +108,7 @@ RealVariable solver::operator *(const RealVariable& x, const RealVariable& y){
         pow2 = false;
         pow1 = true;
     }
-    if(!x.power_1 && y.power_1){
+    if(!x.power_1 && !y.power_1){
         pow2 = false;
         pow1 = false;
     }
@@ -279,9 +279,9 @@ double solver::solve(RealVariable x) {
     if(x.power_1 && !x.power_2){
         ans1 = (x.num*(-1))/x.cofficcient_1;
     }
-    if(!x.power_1 && !x.power_2){
-        ans1 = x.num*(-1);
-    }  
+//     if(!x.power_1 && !x.power_2){
+//         ans1 = x.num*(-1);
+//     }  
     return ans1;
 }
 
