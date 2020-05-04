@@ -459,6 +459,9 @@ ComplexVariable solver::operator ==(std::complex<double> c2, const ComplexVariab
 complex<double> solver::solve(ComplexVariable c) {
     std::complex<double> discriminant = ((c.x_1 * c.x_1)) - (std::complex<double>(4, 0) * c.x_2 * c.c);
     std::complex<double> ans = 0;
+    if(c.x_2 == std::complex<double>(0, 0) && c.x_1 == std::complex<double>(0, 0)){
+        throw runtime_error("This is not equation");
+    }
     if (c.x_2 == std::complex<double>(0, 0)) {
         ans = (-c.c) / c.x_1;
     } else {
