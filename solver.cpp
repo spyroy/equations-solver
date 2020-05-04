@@ -331,7 +331,7 @@ ComplexVariable solver::operator *(const ComplexVariable& c1, const ComplexVaria
     std::complex<double> x_2;
     std::complex<double> x_1;
     std::complex<double> c;
-    if((c1.x_2 == complex<double>(0,0) && c1.x_1 == complex<double>(0,0) && c1.c == complex<double>(0,0)) || c2.x_2 == complex<double>(0,0) && c2.x_1 == complex<double>(0,0) && c2.c == complex<double>(0,0)){
+    if((c1.x_2 == complex<double>(0,0) && c1.x_1 == complex<double>(0,0) && c1.c == complex<double>(0,0)) || (c2.x_2 == complex<double>(0,0) && c2.x_1 == complex<double>(0,0) && c2.c == complex<double>(0,0))){
         return ComplexVariable(0.0,0.0,0.0);
     }
     if(c1.x_2 != complex<double>(0,0) && c2.x_2 != complex<double>(0,0)){
