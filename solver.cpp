@@ -108,7 +108,7 @@ RealVariable solver::operator *(const RealVariable& x, const RealVariable& y){
         pow2 = false;
         pow1 = true;
     }
-    if(!x.power_1 && y.power_1){
+    if(!x.power_1 && !y.power_1){
         pow2 = false;
         pow1 = false;
     }
